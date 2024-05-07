@@ -19,14 +19,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
-//SELF_START----------------------------------------------------------
+
+//---------------------------------------
 protected:
-    //右键菜单事件
-    void contextMenuEvent(QContextMenuEvent * event);//重写父类的方法
+    void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-    QMenu * mExitMenu;//右键弹出菜单
-    QAction * mExitAct;//菜单的一个选项为退出
-//SELF_END------------------------------------------------------------
+    QMenu* mExitMenu;   // 退出菜单
+    QAction* mExitAct;  // 菜单项（退出）
+//----------------------------------------
+
 };
 #endif // MAINWINDOW_H

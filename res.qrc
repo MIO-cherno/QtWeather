@@ -10,8 +10,11 @@
         <file>res/list.png</file>
         <file>res/lowHumidty.png</file>
         <file>res/pm25.png</file>
-        <file>res/Search.png</file>
+        <file>res/search.png</file>
+        <file>res/sunrise.png</file>
         <file>res/WeaFor.png</file>
+        <file>res/wind.png</file>
+        <file>res/world2.png</file>
         <file>res/type/BaoXue.png</file>
         <file>res/type/BaoYu.png</file>
         <file>res/type/BaoYuDaoDaBaoYu.png</file>
@@ -49,6 +52,5 @@
         <file>res/type/ZhongDaoDaYu.png</file>
         <file>res/type/ZhongXue.png</file>
         <file>res/type/ZhongYu.png</file>
-        <file>res/close.ico</file>
     </qresource>
 </RCC>
