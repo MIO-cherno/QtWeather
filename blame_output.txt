@@ -1,0 +1,97 @@
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  1) #include "mainwindow.h"
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  2) #include "ui_mainwindow.h"
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  3) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800  4) 
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800  5) 
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  6) MainWindow::MainWindow(QWidget *parent)
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  7)     : QMainWindow(parent)
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  8)     , ui(new Ui::MainWindow)
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800  9) {
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 10)     ui->setupUi(this);
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 11) 
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 12) //---------------------------------------------------------------------------
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 13)     //设置窗口属性
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 14)     setWindowFlag(Qt::FramelessWindowHint);  // 设置无边框
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 15)     setFixedSize(width(), height());         // 设置固定窗口大小
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 16) 
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 17)     //构建右键菜单
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 18)     mExitMenu = new QMenu(this);
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 19)     mExitAct = new QAction();
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 20)     mExitAct->setText(tr("退出"));
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 21)     mExitAct->setIcon(QIcon(":/res/close.png"));
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 22)     mExitMenu->addAction(mExitAct);
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 23)     //用lamba函数连接退出按钮，触发就退出该应用
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 24)     connect(mExitAct, &QAction::triggered, this, [=]() { qApp->exit(0); });
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 25) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 26) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 27)     mNetAccessManger = new QNetworkAccessManager(this);
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 28) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 29)     connect(mNetAccessManger,&QNetworkAccessManager::finished,this,&MainWindow::GetReply);
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 30)     //第2参数转换其实是一个函数指针，类似下面的代码
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 31)     //void (QPushButton::*ff)(bool)=&QPushButton::clicked;
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 32)     //connect(ui->pushButton_2, ff, this, SLOT(pushButon2_clicked()));
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 33) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 34)     GetWeatherInfor("101010100");
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 35) 
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 36) //-----------------------------------------------------------------------------
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 37) }
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 38) 
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 39) MainWindow::~MainWindow()
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 40) {
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 41)     delete ui;
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 42) 
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 43) }
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 44) //down from here is mycode
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 45) //重写父类虚函数
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 46) //父类中的默认实现是忽略右键菜单时间，重写后就可以
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 47) void MainWindow::contextMenuEvent(QContextMenuEvent * event)
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 48) {
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 49)     //弹出右键菜单
+358a2aba (MIO-cherno 2024-05-07 21:05:23 +0800 50)     mExitMenu->exec(QCursor::pos());//当前鼠标位置"QCursor::pos()"传递，在此位置弹出菜单项
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 51)     event->accept();
+^e20c89a (MIO-cherno 2024-05-06 23:33:24 +0800 52) }
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 53) 
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 54) void MainWindow::mousePressEvent(QMouseEvent *event)
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 55) {
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 56)     mOffset = event->globalPos()-this->pos();
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 57)     //event->globalPos() 来获取鼠标指针在屏幕上的全局位置。
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 58)     /*this->pos() 返回的是这个窗口部件在其父窗口部件中的位置（或称为“坐标”）。
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 59)      * 这个位置也是一个 QPoint 对象，包含了窗口部件左上角的 x 和 y 坐标（相对于其父窗口部件）
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 60)         这里时计算鼠标相对于mainwindow的坐标*/
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 61) 
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 62) }
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 63) 
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 64) void MainWindow::mouseMoveEvent(QMouseEvent *event)
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 65) {
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 66)     this->move(event->globalPos()-mOffset);
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 67)     //减去窗口与鼠标的偏移量，否则窗口的左上角会移动到鼠标当前位置，与预期不符
+783f9773 (MIO-cherno 2024-05-07 21:52:47 +0800 68) }
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 69) /*GetWeatherInfor 使用提供的城市代码来构建URL并发起GET请求
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 70)   QNetworkReply 类封装了使用 QNetworkAccessManager 发布的请求相关的回复信息。
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 71) */
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 72) void MainWindow::GetWeatherInfor(QString CityCode)
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 73) {
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 74)     QUrl url("http://t.weather.itboy.net/api/weather/city/"+CityCode);
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 75) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 76)     /*将这个 QNetworkRequest 对象传递给 QNetworkAccessManager 的相关函数（如 get(), post(), put(), deleteResource() 等）
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 77)      * 来发送网络请求。这些函数将返回一个 QNetworkReply 对象，用于处理请求的响应。*/
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 78)     mNetAccessManger->get(QNetworkRequest(url));
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 79) }
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 80) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 81) void MainWindow::GetReply(QNetworkReply *reply)
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 82) {
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 83)     //qDebug()<<"success get";
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 84) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 85) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 86)     int StatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 87) 
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 88)     if(reply->error() != QNetworkReply::NoError || StatusCode != 200){
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 89)         qDebug() << reply->errorString().toUtf8().data();
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 90)         QMessageBox::warning(this,"天气","请求数据失败",QMessageBox::Ok);
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 91)     }else{
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 92)         QByteArray  byteArray = reply->readAll();
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 93)         qDebug() << "读所有：" << byteArray.data();
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 94)         //parseJson(byteArray);
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 95)     }
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 96)     reply->deleteLater();
+36f60dd7 (MIO-cherno 2024-05-08 18:49:50 +0800 97) }

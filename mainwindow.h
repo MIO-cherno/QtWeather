@@ -1,18 +1,23 @@
-#pragma once
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QDebug>
-
 #include <QMainWindow>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QNetworkAccessManager>//网络请求
 #include <QNetworkReply>//网络接受
 #include <QString>
-#include<QMenu>
-#include<QContextMenuEvent>
+#include <QMenu>
+#include <QContextMenuEvent>
 #include <QMessageBox>
+#include <QJsonArray>
+#include <QJsonParseError>
+#include <QJsonValue>
+#include <QJsonObject>
+
+#include"weatherdata.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -41,6 +46,7 @@ protected:
 
     //获取某个天气信息
     void GetWeatherInfor(QString CityCode);
+    void AnalysisJson(QByteArray & byteArray);
 
 
 private:
@@ -53,6 +59,9 @@ private:
     QPoint mOffset;//窗口移动时，按下的鼠标位置与窗口左上角偏移量
 
     QNetworkAccessManager *mNetAccessManger;//网络请求
+
+    Today mToday;
+    Day   mDay[6];
 //----------------------------------------
 
 };
