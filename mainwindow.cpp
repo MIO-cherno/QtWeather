@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include<QMenu>
-#include<QContextMenuEvent>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,6 +22,17 @@ MainWindow::MainWindow(QWidget *parent)
     mExitMenu->addAction(mExitAct);
     //用lamba函数连接退出按钮，触发就退出该应用
     connect(mExitAct, &QAction::triggered, this, [=]() { qApp->exit(0); });
+
+
+    mNetAccessManger = new QNetworkAccessManager(this);
+
+    connect(mNetAccessManger,&QNetworkAccessManager::finished,this,&MainWindow::GetReply);
+    //第2参数转换其实是一个函数指针，类似下面的代码
+    //void (QPushButton::*ff)(bool)=&QPushButton::clicked;
+    //connect(ui->pushButton_2, ff, this, SLOT(pushButon2_clicked()));
+
+    GetWeatherInfor("101010100");
+
 //-----------------------------------------------------------------------------
 }
 
@@ -31,7 +41,7 @@ MainWindow::~MainWindow()
     delete ui;
 
 }
-
+//down from here is mycode
 //重写父类虚函数
 //父类中的默认实现是忽略右键菜单时间，重写后就可以
 void MainWindow::contextMenuEvent(QContextMenuEvent * event)
@@ -55,4 +65,33 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     this->move(event->globalPos()-mOffset);
     //减去窗口与鼠标的偏移量，否则窗口的左上角会移动到鼠标当前位置，与预期不符
+}
+/*GetWeatherInfor 使用提供的城市代码来构建URL并发起GET请求
+  QNetworkReply 类封装了使用 QNetworkAccessManager 发布的请求相关的回复信息。
+*/
+void MainWindow::GetWeatherInfor(QString CityCode)
+{
+    QUrl url("http://t.weather.itboy.net/api/weather/city/"+CityCode);
+
+    /*将这个 QNetworkRequest 对象传递给 QNetworkAccessManager 的相关函数（如 get(), post(), put(), deleteResource() 等）
+     * 来发送网络请求。这些函数将返回一个 QNetworkReply 对象，用于处理请求的响应。*/
+    mNetAccessManger->get(QNetworkRequest(url));
+}
+
+void MainWindow::GetReply(QNetworkReply *reply)
+{
+    //qDebug()<<"success get";
+
+
+    int StatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+    if(reply->error() != QNetworkReply::NoError || StatusCode != 200){
+        qDebug() << reply->errorString().toUtf8().data();
+        QMessageBox::warning(this,"天气","请求数据失败",QMessageBox::Ok);
+    }else{
+        QByteArray  byteArray = reply->readAll();
+        qDebug() << "读所有：" << byteArray.data();
+        //parseJson(byteArray);
+    }
+    reply->deleteLater();
 }
