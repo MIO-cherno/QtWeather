@@ -1,5 +1,5 @@
 QT       += core gui network
-
+#若要使用qt网络功能，需要在上方添加network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -14,7 +14,8 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
-    weatherdata.h
+    weatherdata.h \
+    weathertool.h
 
 FORMS += \
     mainwindow.ui

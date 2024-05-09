@@ -9,7 +9,7 @@ public:
     Today()
     {
         date = "2024-03-07";
-        city = "渭南";
+        city = "大荔";
 
         ganmao = "感冒指数";
         wendu = 0;

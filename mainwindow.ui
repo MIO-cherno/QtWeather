@@ -59,7 +59,8 @@ QLable{
 
 	border-radius:3px;
 	
-	font: italic 10pt &quot;得意黑&quot;;
+	
+	font: 10pt &quot;微软雅黑&quot;;
 	color: rgb(255, 255, 255);
 
 }</string>
@@ -271,7 +272,7 @@ QLable{
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="labelTip">
         <property name="styleSheet">
-         <string notr="true">font: 8pt &quot;仿宋&quot;;
+         <string notr="true">font: 9pt &quot;微软雅黑&quot;;
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
@@ -296,7 +297,7 @@ color: rgb(255, 255, 255);</string>
      <property name="styleSheet">
       <string notr="true">color: rgb(255, 255, 255);
 border-radius:3px;
-font: italic 8pt &quot;得意黑&quot;;
+font:  8pt &quot;微软雅黑&quot;;
 </string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -368,7 +369,7 @@ QLabel#labelWeek0,#labelWeek1,#labelWeek2,#labelWeek3,#labelWeek4,#labelWeek5{
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="labelData1">
+          <widget class="QLabel" name="labelDate1">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -382,7 +383,7 @@ border-bottom-right-radius:0px;</string>
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QLabel" name="labelData3">
+          <widget class="QLabel" name="labelDate3">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -396,7 +397,7 @@ border-bottom-right-radius:0px;</string>
           </widget>
          </item>
          <item row="0" column="4">
-          <widget class="QLabel" name="labelData4">
+          <widget class="QLabel" name="labelDate4">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -410,7 +411,7 @@ border-bottom-right-radius:0px;</string>
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="labelData0">
+          <widget class="QLabel" name="labelDate0">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -437,7 +438,7 @@ border-bottom-right-radius:0px;</string>
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QLabel" name="labelData2">
+          <widget class="QLabel" name="labelDate2">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -461,7 +462,7 @@ border-bottom-right-radius:0px;</string>
           </widget>
          </item>
          <item row="0" column="5">
-          <widget class="QLabel" name="labelData5">
+          <widget class="QLabel" name="labelDate5">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
 border-bottom-right-radius:0px;</string>
@@ -703,7 +704,7 @@ QLabel#labelType0,#labelType1,#labelType2,#labelType3,#labelType4,#labelType5{
          <number>5</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="labelQ0">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(92, 255, 138);
 color: rgb(255, 255, 255);</string>
@@ -717,7 +718,7 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="labelQ1">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(228, 255, 90);</string>
           </property>
@@ -730,7 +731,7 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="labelQ2">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 199, 67);</string>
           </property>
@@ -743,7 +744,7 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="labelQ3">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 123, 29);</string>
           </property>
@@ -756,7 +757,7 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_5">
+         <widget class="QLabel" name="labelQ4">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 68, 51);</string>
           </property>
@@ -769,7 +770,7 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_6">
+         <widget class="QLabel" name="labelQ5">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(147, 0, 0);</string>
           </property>
@@ -1037,7 +1038,7 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="NowData">
+       <widget class="QLabel" name="NowDate">
         <property name="styleSheet">
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
@@ -1049,14 +1050,14 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
      </layout>
      <zorder>SearchButton</zorder>
      <zorder>SearchGet</zorder>
-     <zorder>NowData</zorder>
+     <zorder>NowDate</zorder>
     </widget>
     <widget class="QWidget" name="NowWeatherInfor" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>110</y>
-       <width>241</width>
+       <width>291</width>
        <height>111</height>
       </rect>
      </property>
@@ -1066,6 +1067,12 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
      <layout class="QHBoxLayout" name="NowInfor">
       <item>
        <widget class="QLabel" name="TypeIcon">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>90</height>
+         </size>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
         </property>

@@ -1,4 +1,3 @@
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -11,13 +10,16 @@
 #include <QString>
 #include <QMenu>
 #include <QContextMenuEvent>
-#include <QMessageBox>
+#include <QMessageBox>//?
+//Json分析
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QJsonValue>
 #include <QJsonObject>
+#include <QMap>
 
 #include"weatherdata.h"
+#include "weathertool.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -48,6 +50,11 @@ protected:
     void GetWeatherInfor(QString CityCode);
     void AnalysisJson(QByteArray & byteArray);
 
+    void weaType();
+    void UpdataUI();
+
+private slots:
+    void on_SearchButton_clicked();
 
 private:
     void GetReply(QNetworkReply * Reply);
@@ -62,6 +69,24 @@ private:
 
     Today mToday;
     Day   mDay[6];
+
+    //星期和日期
+    QList<QLabel*> mWeekList;
+    QList<QLabel*> mDateList;
+
+    //天气和图标
+    QList<QLabel*> mTypeList;
+    QList<QLabel*> mTypeIconList;
+
+    // 空前质量指数
+    QList<QLabel*> mAqiList;
+
+    //风力风向
+    QList<QLabel*> mFxList;
+    QList<QLabel*> mFlList;
+
+    //图标名称及图标路径
+    QMap<QString,QString>mTypeMap;
 //----------------------------------------
 
 };
