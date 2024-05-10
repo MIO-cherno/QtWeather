@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
+#define INCREMENT 2     //温度每升高或降低1度，y轴坐标的增量
+#define POINT_RADIUS 3  //曲线秒点的大小
+#define TEXT_OFFSET_X 9    //温度文本相对于x点的偏移
+#define TEXT_OFFSET_Y 7    //温度文本相对于y点的偏移
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -26,20 +29,44 @@ MainWindow::MainWindow(QWidget *parent)
 
     weaType();
 
+    /* 大致流程
+     * 先在mainwindow类中创建 mNetAccessManger 网络请求对象，
+     * 然后GetWeatherInfor方法通过mNetAccessManger向api接口发送get请求
+     * mNetAccessManger请求完成（QNetworkAccessManager::finished）返回QNetworkReply
+     * GetReply接收QNetworkReply并对接收的json数据进行分析（AnalysisJson方法）
+     * AnalysisJson方法分析完成后又调用Update方法更新ui
+     * 最后是绘制高低温曲线
+    */
+
     //网络请求
     mNetAccessManger = new QNetworkAccessManager(this);
-
+    GetWeatherInfor("西安");//默认西安市
     connect(mNetAccessManger,&QNetworkAccessManager::finished,this,&MainWindow::GetReply);
     //mNetAccessManger()是通过GetWeatherInfor()来获取信息的
     //第2参数转换其实是一个函数指针，类似下面的代码
     //void (QPushButton::*ff)(bool)=&QPushButton::clicked;
     //connect(ui->pushButton_2, ff, this, SLOT(pushButon2_clicked()));
 
-    GetWeatherInfor("西安");//默认西安市
 
 
+    //给标签添加事件过滤器
+    ui->labelHighPoint->installEventFilter(this);
+    ui->labelLowPoint->installEventFilter(this);
+    /* 事件过滤器（Event Filter）是一种强大的机制，允许一个对象（称为事件过滤器）接收并处理另一个对象的事件。
+     * 这通常用于在事件到达目标对象之前拦截并修改它们。
+     * 确保你的类继承了QObject或它的子类,   * eventFilter()是QObject类的一个虚方法。
+     *
+     * targetWidget->installEventFilter(filter);
+     * QWidget 指针 targetWidget 和一个 MyEventFilter 类的实例 filter
+    */
 
 
+    /* 绘制温度曲线大致流程：
+     * 1.调用标签的update方法
+     * 2.框架发送QEvent：：Paint事件给标签
+     * 3.事件被maiwindow拦截，进而调用其eventFilter方法
+     * 4.在eventFilter中，调用paintHighCurve和paintLowCurve来绘制曲线
+    */
 
 //------------------------------mainwindow构造函数↑↑↑↑↑-----------------------------------------------
 }
@@ -124,6 +151,8 @@ void MainWindow::GetReply(QNetworkReply *reply)
     }
     reply->deleteLater();
 }
+
+
 /*===================================================================================================*/
 //分析获取的json
 void MainWindow::AnalysisJson(QByteArray &byteArray)
@@ -217,7 +246,14 @@ void MainWindow::AnalysisJson(QByteArray &byteArray)
     mToday.low = mDay[1].low;
 
 
-    UpdataUI();
+    UpdateUI();
+    //搜索时更新最高最低温度曲线
+    /* 调用时会除法paint事件，然后被当前调用update（）的窗口（mainwindow）拦截，
+     * 会通过过滤器调用eventFilter（），才会实际进行一次绘制曲线
+     *
+    */
+    ui->labelHighPoint->update();
+    ui->labelLowPoint->update();
 }
 /*===================================================================================================*/
 void MainWindow::weaType()
@@ -280,7 +316,7 @@ void MainWindow::weaType()
     mTypeMap.insert("中雪",":/res/type/ZhongXue.png");
 }
 /*===================================================================================================*/
-void MainWindow::UpdataUI()
+void MainWindow::UpdateUI()
 {
     ui->NowDate->setText(QDateTime::fromString(mToday.date,"yyyyMMdd").toString("yyyy/MM/dd")
                          +" "+mDay[1].week);
@@ -329,7 +365,7 @@ void MainWindow::UpdataUI()
         }else if(mDay[i].aqi > 150 && mDay[i].aqi <= 200){
             mAqiList[i]->setText("中度");
             mAqiList[i]->setStyleSheet("background-color: rgb(255,17,27);");
-        }else if(mDay[i].aqi > 150 && mDay[i].aqi <= 200){
+        }else if(mDay[i].aqi > 200 && mDay[i].aqi <= 300){
             mAqiList[i]->setText("重度");
             mAqiList[i]->setStyleSheet("background-color: rgb(210,0,0);");
         }else{
@@ -338,6 +374,7 @@ void MainWindow::UpdataUI()
         }
 
         //更新风力、风向
+
         mFxList[i]->setText(mDay[i].fx);
         mFlList[i]->setText(mDay[i].fl);
     }
@@ -353,4 +390,148 @@ void MainWindow::on_SearchButton_clicked()
     }
     GetWeatherInfor(CityName);
 }
+/*===================================================================================================*/
+/* watched：指向你正在监视的对象的指针。
+ * event：指向要过滤的事件的指针。
+ * 如果函数返回 true，则事件已被处理，并且不会传递给 watched 对象。
+ * 如果返回 false，则事件将被正常地传递给 watched 对象。*/
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    //绘制最高温度曲线
+    if(watched == ui->labelHighPoint && event->type() == QEvent::Paint){
+        paintHighCurve();
+    }
+    //绘制最低温度曲线
+    if(watched == ui->labelLowPoint && event->type() == QEvent::Paint){
+        paintLowCurve();
+    }
+    //其他控件做默认处理，所以要调用父类的方法
+    return QWidget::eventFilter(watched,event);
+
+}
+/*===================================================================================================*/
+void MainWindow::paintHighCurve()
+{
+    QPainter painter(ui->labelHighPoint);
+
+    //抗锯齿
+    painter.setRenderHint(QPainter::Antialiasing,true);
+
+    //获取x坐标
+    //在显示日期的控件的对称轴位置
+    int pointX[6] = {0};
+    for(int i = 0;i < 6;i++){
+        pointX[i] = mWeekList[i]->pos().x() + mWeekList[i]->width() / 2;
+    }
+
+    //获取y坐标
+    //平均值为中间位置，>avg
+    //当天温度与6天温度平均值差值，差值>0，在控件的上下对称轴上方，反之在下方
+    int tmpSum = 0;
+    int tmpAvg = 0;//6天气温平均值
+    for(int i = 0;i < 6;i++){
+        tmpSum += mDay[i].high;
+    }
+    tmpAvg = tmpSum / 6;
+    int pointY[6] = {0};
+    int yCenter = ui->labelHighPoint->height() / 2;//控件的上下对称轴
+    for(int i = 0;i < 6;i++){
+        pointY[i] = yCenter - ((mDay[i].high - tmpAvg) * INCREMENT);
+    }
+
+    //绘制
+    //初始化画笔相关
+    QPen pen = painter.pen();
+    pen.setWidth(1);
+    pen.setColor(QColor(255,170,80));
+    painter.setPen(pen);
+    //上面只画了轮廓
+    painter.setBrush(QColor(255 ,170,80));    //设置画刷内部填充的颜色
+
+    //画点、写文本
+    for(int i = 0;i < 6;i++){
+        //画点，参数为：x坐标、y坐标，x半轴长度，y半轴长度
+        painter.drawEllipse(QPoint(pointX[i],pointY[i]),POINT_RADIUS,POINT_RADIUS);
+        //显示温度文本
+        painter.drawText(pointX[i] - TEXT_OFFSET_X,pointY[i] - TEXT_OFFSET_Y,
+                         QString::number(mDay[i].high) + "°");
+    }
+    //连线
+    for(int i = 0;i < 5;i++){
+        //昨天到今天为虚线
+        if(i == 0){
+            pen.setStyle(Qt::DashLine);
+            painter.setPen(pen);
+        }else{
+            pen.setStyle(Qt::SolidLine);
+            painter.setPen(pen);
+        }
+        //画线
+        painter.drawLine(pointX[i],pointY[i],pointX[i + 1],pointY[i + 1]);
+
+    }
+}
+/*===================================================================================================*/
+void MainWindow::paintLowCurve()
+{
+    QPainter painter(ui->labelLowPoint);
+
+    //抗锯齿
+    painter.setRenderHint(QPainter::Antialiasing,true);
+
+    //获取x坐标
+    //在显示日期的控件的对称轴位置
+    int pointX[6] = {0};
+    for(int i = 0;i < 6;i++){
+        pointX[i] = mWeekList[i]->pos().x() + mWeekList[i]->width() / 2;
+    }
+
+    //获取y坐标
+    //平均值为中间位置，>avg
+    //当天温度与6天温度平均值差值，差值>0，在控件的上下对称轴上方，反之在下方
+    int tmpSum = 0;
+    int tmpAvg = 0;//6天气温平均值
+    for(int i = 0;i < 6;i++){
+        tmpSum += mDay[i].low;
+    }
+    tmpAvg = tmpSum / 6;
+    int pointY[6] = {0};
+    int yCenter = ui->labelLowPoint->height() / 2;//控件的上下对称轴
+    for(int i = 0;i < 6;i++){
+        pointY[i] = yCenter - ((mDay[i].low - tmpAvg) * INCREMENT);
+    }
+
+    //绘制
+    //初始化画笔相关
+    QPen pen = painter.pen();
+    pen.setWidth(1);
+    pen.setColor(QColor(100,255,255));
+    painter.setPen(pen);
+    //上面只画了轮廓
+    painter.setBrush(QColor(100 ,255,255));    //设置画刷内部填充的颜色
+
+    //画点、写文本
+    for(int i = 0;i < 6;i++){
+        //画点，参数为：x坐标、y坐标，x半轴长度，y半轴长度
+        painter.drawEllipse(QPoint(pointX[i],pointY[i]),POINT_RADIUS,POINT_RADIUS);
+        //显示温度文本
+        painter.drawText(pointX[i] - TEXT_OFFSET_X,pointY[i] - TEXT_OFFSET_Y,
+                         QString::number(mDay[i].low) + "°");
+    }
+    //连线
+    for(int i = 0;i < 5;i++){
+        //昨天到今天为虚线
+        if(i == 0){
+            pen.setStyle(Qt::DashLine);
+            painter.setPen(pen);
+        }else{
+            pen.setStyle(Qt::SolidLine);
+            painter.setPen(pen);
+        }
+            //画线
+        painter.drawLine(pointX[i],pointY[i],pointX[i + 1],pointY[i + 1]);
+
+    }
+}
+
 /*===================================================================================================*/

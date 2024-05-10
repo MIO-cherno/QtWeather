@@ -18,6 +18,8 @@
 #include <QJsonObject>
 #include <QMap>
 
+#include <QPainter>
+
 #include"weatherdata.h"
 #include "weathertool.h"
 
@@ -51,13 +53,26 @@ protected:
     void AnalysisJson(QByteArray & byteArray);
 
     void weaType();
-    void UpdataUI();
+    void UpdateUI();
 
 private slots:
     void on_SearchButton_clicked();
+    /*
+     * warring: Slots named on_foo_bar are error prone
+     * 这个警告的出现，是因为我们在处理信号–槽关系时，是通过 ui designer中的"Go to slot" ，让程序自动生成。
+     * 而这种自动生成的弱点就是也许有一天，你在 ui designer中改了控件的名字，但此时编译也不会报错。
+     * 程序还是正常跑，编译也不提示错误。
+     * 这样，控件就相当于连不到槽函数上去了，就失效了
+    */
 
 private:
     void GetReply(QNetworkReply * Reply);
+
+    //重写父类的eventFilter方法
+    bool eventFilter(QObject* watched,QEvent* event);
+
+    void paintHighCurve();
+    void paintLowCurve();
 
 private:
     QMenu* mExitMenu;   // 退出菜单
@@ -87,6 +102,8 @@ private:
 
     //图标名称及图标路径
     QMap<QString,QString>mTypeMap;
+
+
 //----------------------------------------
 
 };

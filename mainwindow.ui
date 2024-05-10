@@ -46,9 +46,9 @@ QLable{
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>240</y>
+       <y>180</y>
        <width>341</width>
-       <height>201</height>
+       <height>261</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -201,7 +201,7 @@ QLable{
           <item>
            <widget class="QLabel" name="airqlity">
             <property name="text">
-             <string>空气质量</string>
+             <string>空气品质</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -221,6 +221,23 @@ QLable{
          </layout>
         </item>
        </layout>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="labelTip">
+        <property name="styleSheet">
+         <string notr="true">font: 7pt &quot;微软雅黑&quot;;
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>感冒指数：儿童、老年人及心脏、呼吸系统疾病患者人群应减少长时间或高强度户外锻炼</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="WindNow">
@@ -268,20 +285,6 @@ QLable{
          </layout>
         </item>
        </layout>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="labelTip">
-        <property name="styleSheet">
-         <string notr="true">font: 9pt &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>感冒指数：儿童、老年人及心脏、呼吸系统疾病患者人群应减少长时间或高强度户外锻炼</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -358,7 +361,7 @@ QLabel#labelWeek0,#labelWeek1,#labelWeek2,#labelWeek3,#labelWeek4,#labelWeek5{
          <item row="1" column="0">
           <widget class="QLabel" name="labelWeek0">
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">color: rgb(208, 208, 208);</string>
            </property>
            <property name="text">
             <string>01/01</string>
@@ -414,7 +417,10 @@ border-bottom-right-radius:0px;</string>
           <widget class="QLabel" name="labelDate0">
            <property name="styleSheet">
             <string notr="true">border-bottom-left-radius:0px;
-border-bottom-right-radius:0px;</string>
+border-bottom-right-radius:0px;
+
+
+color: rgb(209, 209, 209);</string>
            </property>
            <property name="text">
             <string>昨天</string>
@@ -633,6 +639,9 @@ QLabel#labelType0,#labelType1,#labelType2,#labelType3,#labelType4,#labelType5{
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="labelType0">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(208, 208, 208);</string>
+           </property>
            <property name="text">
             <string>晴</string>
            </property>
@@ -675,6 +684,9 @@ QLabel#labelType0,#labelType1,#labelType2,#labelType3,#labelType4,#labelType5{
              <height>35</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(209, 209, 209);</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -707,7 +719,7 @@ QLabel#labelType0,#labelType1,#labelType2,#labelType3,#labelType4,#labelType5{
          <widget class="QLabel" name="labelQ0">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(92, 255, 138);
-color: rgb(255, 255, 255);</string>
+color: rgb(195, 195, 195);</string>
           </property>
           <property name="text">
            <string>优</string>
@@ -799,7 +811,7 @@ color: rgb(255, 255, 255);</string>
          <number>5</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_7">
+         <widget class="QLabel" name="labelHighPoint">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -807,12 +819,12 @@ color: rgb(255, 255, 255);</string>
            </size>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_8">
+         <widget class="QLabel" name="labelLowPoint">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -820,7 +832,7 @@ color: rgb(255, 255, 255);</string>
            </size>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -935,6 +947,9 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
              <height>22</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(208, 208, 208);</string>
+           </property>
            <property name="text">
             <string>东风</string>
            </property>
@@ -955,6 +970,9 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_fl0">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(209, 209, 209);</string>
+           </property>
            <property name="text">
             <string>1级</string>
            </property>
@@ -1055,9 +1073,9 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
     <widget class="QWidget" name="NowWeatherInfor" native="true">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>110</y>
-       <width>291</width>
+       <x>20</x>
+       <y>70</y>
+       <width>321</width>
        <height>111</height>
       </rect>
      </property>
@@ -1069,7 +1087,13 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
        <widget class="QLabel" name="TypeIcon">
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>90</width>
+          <height>90</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>90</width>
           <height>90</height>
          </size>
         </property>
@@ -1096,6 +1120,12 @@ QLabel#label_fl0,#label_fl1,#label_fl2,#label_fl3,#label_fl4,#label_fl5{
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
            <widget class="QLabel" name="NowTemp">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(255, 255, 255);
 font: 25pt &quot;Arial&quot;;
